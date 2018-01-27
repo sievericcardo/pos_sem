@@ -55,19 +55,17 @@ int sem_init (sem_t *sem, int pshared, unsigned int value) {
             exception_handling(message);
         }
     }
-    else if (sem_get == -1) { /* We check if value is -1 but not exists */
-        char* message = "Error - unexpected value for semget function";
-        exception_handling(message);
-    }
     else {
-        if((result = semctl((int) sem, 0, SETVAL, value)) == -1) {
+        *sem = sem_get;
+
+        if((result = semctl(*sem, 0, SETVAL, value)) == -1) {
             char* message = "Error - semctl did not end correctly";
             exception_handling(message);
         }
     }
-    
+
     /* Casting of the integer value got from semget to our semaphore */
-    sem = (void*) &sem_get;
+    // *sem = (sem_t) &sem_get;
     
     return result;
 }
@@ -101,7 +99,7 @@ int sem_wait (sem_t *sem) {
     semaphore_buffer.sem_flg = 0; /* operation flags */
 
     /* semop returns 0 if successfull */
-    if (semop((int) sem, &semaphore_buffer, 1) == -1) {
+    if (semop((int) *sem, &semaphore_buffer, 1) == -1) {
         char* message = "Error - unexpected behaviour of semop in sem_wait";
         exception_handling(message);
     }
@@ -124,7 +122,7 @@ int sem_trywait (sem_t *sem) {
     semaphore_buffer.sem_op = -1; /* semaphore operation */
     semaphore_buffer.sem_flg = IPC_NOWAIT; /* operation flags */
 
-    if(semop((int) sem, &semaphore_buffer, 1) == -1) {
+    if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
         char* message = "Error - unexpected behaviour of semop in sem_trywait";
         exception_handling(message);
     }
@@ -149,7 +147,7 @@ int sem_post(sem_t *sem) {
     semaphore_buffer.sem_op = 1; /* semaphore operation */
     semaphore_buffer.sem_flg = 0; /* operation flags */
 
-    if(semop((int) sem, &semaphore_buffer, 1) == -1) {
+    if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
         char* message = "Error - unexpected behaviour of semop in sem_post";
         exception_handling(message);
     }
@@ -164,7 +162,7 @@ int sem_destroy(sem_t *sem) {
 
     int result;
 
-    if((result = semctl((int) sem, 0, IPC_RMID)) == -1) {
+    if((result = semctl((int) *sem, 0, IPC_RMID)) == -1) {
         char* message = "Error - couldn\'t destroy the semaphore";
         exception_handling(message);
     }
