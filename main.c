@@ -1,3 +1,5 @@
+// Code taken at https://www.geeksforgeeks.org/use-posix-semaphores-c/
+// Used to demonstrate correctness of the library
 // C program to demonstrate working of Semaphores
 #include <stdio.h>
 #include <pthread.h>
