@@ -26,10 +26,12 @@
 
 #include <sys/sem.h>
 
-typedef volatile unsigned char atomic_t;
-typedef atomic_t sem_t;
+/* Definition of the sem_t type contained in the semaphore.h library */
+// typedef volatile unsigned char atomic_t;
+// typedef atomic_t sem_t;
+typedef int sem_t; // TODO: implement it with correct POSIX type
 
-int sem_init(sem_t *, int , unsigned int );
+int sem_init(sem_t *, int, unsigned int);
 int sem_wait (sem_t *);
 int sem_trywait (sem_t *);
 int sem_post(sem_t *);
