@@ -28,7 +28,6 @@
 /* to access this function. */
 void exception_handling (char* message) {
     fprintf(stderr, "%s: %d\n", message, errno);
-    exit(-1);
 }
 
 int sem_init (sem_t *sem, int pshared, unsigned int value) {
@@ -102,6 +101,7 @@ int sem_wait (sem_t *sem) {
     if (semop((int) *sem, &semaphore_buffer, 1) == -1) {
         char* message = "Error - unexpected behaviour of semop in sem_wait";
         exception_handling(message);
+        return -1;
     }
 
     return 0;
@@ -123,8 +123,9 @@ int sem_trywait (sem_t *sem) {
     semaphore_buffer.sem_flg = IPC_NOWAIT; /* operation flags */
 
     if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
-        char* message = "Error - unexpected behaviour of semop in sem_trywait";
+        char* message = "Couldn't acquire the lock in sem_trywait";
         exception_handling(message);
+        return -1;
     }
     
     return 0;
@@ -150,6 +151,7 @@ int sem_post(sem_t *sem) {
     if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
         char* message = "Error - unexpected behaviour of semop in sem_post";
         exception_handling(message);
+        return -1;
     }
 
     return 0;
@@ -165,6 +167,7 @@ int sem_destroy(sem_t *sem) {
     if((result = semctl((int) *sem, 0, IPC_RMID)) == -1) {
         char* message = "Error - couldn\'t destroy the semaphore";
         exception_handling(message);
+        return result;
     }
 
     return result;
