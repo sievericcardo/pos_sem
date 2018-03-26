@@ -50,8 +50,9 @@ int sem_init (sem_t *sem, int pshared, unsigned int value) {
         printf("Resourse already in use\n");
         
         if(sem_get < 0){
-            char* message = "Error - unexpected value for semget function";
-            exception_handling(message);
+            /*char* message = "Error - unexpected value for semget function";
+            exception_handling(message);*/
+            return sem_get;
         }
     }
     else {
@@ -99,8 +100,8 @@ int sem_wait (sem_t *sem) {
 
     /* semop returns 0 if successfull */
     if (semop((int) *sem, &semaphore_buffer, 1) == -1) {
-        char* message = "Error - unexpected behaviour of semop in sem_wait";
-        exception_handling(message);
+        /*char* message = "Error - unexpected behaviour of semop in sem_wait";
+        exception_handling(message);*/
         return -1;
     }
 
@@ -123,8 +124,8 @@ int sem_trywait (sem_t *sem) {
     semaphore_buffer.sem_flg = IPC_NOWAIT; /* operation flags */
 
     if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
-        char* message = "Couldn't acquire the lock in sem_trywait";
-        exception_handling(message);
+        /*char* message = "Couldn't acquire the lock in sem_trywait";
+        exception_handling(message);*/
         return -1;
     }
     
@@ -149,8 +150,8 @@ int sem_post(sem_t *sem) {
     semaphore_buffer.sem_flg = 0; /* operation flags */
 
     if(semop((int) *sem, &semaphore_buffer, 1) == -1) {
-        char* message = "Error - unexpected behaviour of semop in sem_post";
-        exception_handling(message);
+        /*char* message = "Error - unexpected behaviour of semop in sem_post";
+        exception_handling(message);*/
         return -1;
     }
 
@@ -165,8 +166,8 @@ int sem_destroy(sem_t *sem) {
     int result;
 
     if((result = semctl((int) *sem, 0, IPC_RMID)) == -1) {
-        char* message = "Error - couldn\'t destroy the semaphore";
-        exception_handling(message);
+        /*char* message = "Error - couldn\'t destroy the semaphore";
+        exception_handling(message);*/
         return result;
     }
 
